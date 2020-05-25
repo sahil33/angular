@@ -17,11 +17,13 @@ import { Location } from '@angular/common';
 export class DishdetailComponent implements OnInit {
 
   dish: Dish;
+  errMess: string;
   dishIds: string[];
   prev: string;
   next: string;
   commentForm: FormGroup;
   comment: Comment;
+  dishcopy: Dish;
   formErrors = {
     'author': '',
     'comment': ''
@@ -45,6 +47,7 @@ export class DishdetailComponent implements OnInit {
     private location: Location, private fb: FormBuilder,
     @Inject('BaseURL') private BaseURL) {
       this.createForm();
+
     }
    
 
@@ -56,7 +59,12 @@ export class DishdetailComponent implements OnInit {
   ngOnInit() {
     this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
     this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
-    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); });
+    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id);},
+    errmess => this.errMess = <any>errmess );
+    this.route.params
+      .pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
+      .subscribe(dish => { this.dish = dish; this.dishcopy = dish; this.setPrevNext(dish.id); },
+        errmess => this.errMess = <any>errmess );
   }
 
   setPrevNext(dishId: string) {
@@ -108,6 +116,12 @@ export class DishdetailComponent implements OnInit {
        comment: '',
        rating: 5,
      });
+     this.dishcopy.comments.push(this.comment);
+     this.dishservice.putDish(this.dishcopy)
+       .subscribe(dish => {
+         this.dish = dish; this.dishcopy = dish;
+       },
+       errmess => { this.dish = null; this.dishcopy = null; this.errMess = <any>errmess; });
    }
 
   

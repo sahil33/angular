@@ -30,7 +30,7 @@
          </mat-card>
        </div>
      </div>
-       <div [hidden]="dish">
+       <div [hidden]="dish || errMess">
               <mat-spinner></mat-spinner><h4>Loading . . . Please Wait</h4>
        </div> 
          <div fxFlex="40">
@@ -53,9 +53,7 @@
               </p> 
             </mat-list-item>
             </mat-list>
-         </div> 
-
-   <div fxFlex='40'>
+        
     <form novalidate [formGroup]="commentForm" (ngSubmit)="onSubmit()">
             <p>
               <mat-form-field class="half-width">
@@ -76,6 +74,11 @@
             </p>
             <button type="button" (click)="onSubmit()" mat-button class="background-primary text-floral-white" [disabled]="commentForm.invalid">Submit</button>
     </form>
+  
+  <div fxFlex *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
+  </div>
   </div>
 </div>  
 
