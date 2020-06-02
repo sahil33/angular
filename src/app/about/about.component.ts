@@ -20,7 +20,7 @@ export class AboutComponent implements OnInit {
 
   leaders : Leader[];
   LeadErrMess : string;
-  
+  s
   constructor(private leaderservice :LeaderService,
   @Inject('BaseURL') private BaseURL) { }
 
